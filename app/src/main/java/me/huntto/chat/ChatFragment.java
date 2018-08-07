@@ -80,6 +80,7 @@ public class ChatFragment extends Fragment {
         layoutManager.setReverseLayout(true);
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         msgListView.setLayoutManager(layoutManager);
+        mMsgList.clear();
         mMsgListAdapter = new MsgListAdapter(mMsgList);
         msgListView.setAdapter(mMsgListAdapter);
         msgListView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
@@ -139,7 +140,7 @@ public class ChatFragment extends Fragment {
             Message msg = mMsgList.get(position);
             LogUtil.i(msg.content);
             if (msg.host) {
-                holder.otherMsgVew.setVisibility(View.GONE);
+                holder.otherMsgLayout.setVisibility(View.GONE);
                 holder.myMsgView.setText(msg.content);
                 holder.myMsgLayout.setVisibility(View.VISIBLE);
             } else {

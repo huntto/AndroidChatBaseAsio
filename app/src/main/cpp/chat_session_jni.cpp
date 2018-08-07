@@ -243,15 +243,13 @@ static jboolean NativeNewInstance(ARGS, jobject session_obj) {
 }
 
 static jboolean NativeRelease(ARGS, jint id) {
-    LOGD("nativeRelease");
-    tcp_server_map.erase(id);
-    tcp_client_map.erase(id);
     {
         std::lock_guard<std::mutex> lock(tcp_sessions_map_mutex);
         tcp_sessions_map[id].clear();
         tcp_sessions_map.erase(id);
     }
-
+    tcp_server_map.erase(id);
+    tcp_client_map.erase(id);
     return JNI_TRUE;
 }
 

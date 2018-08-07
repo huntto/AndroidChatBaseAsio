@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class StartFragment extends Fragment {
         @Override
         public void onConnected() {
             Toast.makeText(getContext(), "Connected", Toast.LENGTH_LONG).show();
-            goToChat(mChatSession);
+            goToChat();
         }
 
         @Override
@@ -41,7 +42,7 @@ public class StartFragment extends Fragment {
         @Override
         public void onAccepted() {
             Toast.makeText(getContext(), "Accepted", Toast.LENGTH_LONG).show();
-            goToChat(mChatSession);
+            goToChat();
         }
 
         @Override
@@ -105,14 +106,16 @@ public class StartFragment extends Fragment {
         return true;
     }
 
-    private void goToChat(ChatSession session) {
+    private void goToChat() {
+        ChatSession session = mChatSession;
+        mChatSession = null;
         if (mListener != null) {
             mListener.onGoToChat(session);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_start, container, false);
         initViews(contentView);
@@ -181,9 +184,20 @@ public class StartFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mIpEdit.clearFocus();
+        mPortEdit.clearFocus();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if (mChatSession != null) {
+            mChatSession.release();
+            mChatSession = null;
+        }
     }
 
     public interface OnFragmentInteractionListener {
